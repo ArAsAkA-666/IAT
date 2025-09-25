@@ -358,41 +358,30 @@
     <!-- Setup -->
     <div id="setup">
       <div class="section">
-        <div>
-          <label class="small">Оролцогчийн ID / Нэр <span class="required">*</span>:</label>
-          <input id="participant" placeholder="Жишээ: Б.Батбаяр" required>
+        <div style="margin-bottom: 16px;">
+          <label class="small">Оролцогчийн ID <span class="required">*</span>:</label>
+          <input id="participant" placeholder="Жишээ: 001" required>
         </div>
+
+        <div class="grid">
+          <div>
+            <label class="small">Хүйс <span class="required">*</span>:</label>
+            <select id="gender" required>
+              <option value="">Сонгоно уу</option>
+              <option value="М">Эрэгтэй</option>
+              <option value="Э">Эмэгтэй</option>
+              <option value="Б">Бусад</option>
+            </select>
+          </div>
+          <div>
+            <label class="small">Нас <span class="required">*</span>:</label>
+            <input id="age" type="number" placeholder="Жишээ: 25" min="1" max="120" required>
+          </div>
+        </div>
+
         <!-- Anti-spam босго далдлагдсан, гэхдээ ажиллаж байна -->
         <input id="minRt" type="hidden" value="200">
       </div>
-
-      <div class="question-group">
-        <label class="small">Таны одоогийн сэтгэл санааны төлөв хэрхэн байна?</label>
-        <div class="likert-scale">
-          <div class="likert-option">
-            <input type="radio" name="mood" value="1" id="mood1">
-            <label for="mood1" class="likert-label">Маш муу</label>
-          </div>
-          <div class="likert-option">
-            <input type="radio" name="mood" value="2" id="mood2">
-            <label for="mood2" class="likert-label">Муу</label>
-          </div>
-          <div class="likert-option">
-            <input type="radio" name="mood" value="3" id="mood3">
-            <label for="mood3" class="likert-label">Дунд зэрэг</label>
-          </div>
-          <div class="likert-option">
-            <input type="radio" name="mood" value="4" id="mood4">
-            <label for="mood4" class="likert-label">Сайн</label>
-          </div>
-          <div class="likert-option">
-            <input type="radio" name="mood" value="5" id="mood5">
-            <label for="mood5" class="likert-label">Маш сайн</label>
-          </div>
-        </div>
-      </div>
-
-
 
       <div class="instructions">
         <strong>Заавар:</strong>
@@ -402,11 +391,12 @@
           <li><strong>3-р хэсэг:</strong> Зураг + үг хослол харж "I" (эерэг) эсвэл "E" (сөрөг) дарна</li>
           <li>Хэт хурдан хариултыг (200ms-ээс бага) тооцохгүй</li>
           <li>Аль болох хурдан, зөв хариулахыг хичээгээрэй</li>
+          <li><strong>Space товчийг дарж тестийг эхлүүлээрэй</strong></li>
         </ul>
       </div>
 
       <div class="row">
-        <button id="btnStart">Туршилтыг эхлүүлэх</button>
+        <button id="btnStart">Туршилтыг эхлүүлэх (Space)</button>
       </div>
     </div>
 
@@ -601,6 +591,8 @@
       rt_ms: rt,
       ts: nowTs(),
       participant: participantData.participant || '',
+      gender: participantData.gender || '',
+      age: participantData.age || '',
       valid: !invalid,
       reason: invalid ? (rt < minValidRt ? `too_fast_${rt}ms` : 'spam_series') : ''
     });
@@ -619,7 +611,7 @@
   }
 
   function toCSV(rows) {
-    const cols = ["idx","phase","phase_type","word","image","answer","rt_ms","ts","participant","valid","reason"];
+    const cols = ["idx","phase","phase_type","word","image","answer","rt_ms","ts","participant","gender","age","valid","reason"];
     const header = cols.join(",");
     const body = rows.map(r => cols.map(c => {
       const v = r[c];
@@ -685,11 +677,30 @@
   // ===== 5) Event Handlers =====
 
   // Start Test Button
-  document.getElementById('btnStart').addEventListener('click', () => {
+  document.getElementById('btnStart').addEventListener('click', startTest);
+  
+  function startTest() {
     participantData = getFormData('setup');
     
+    // Validate required fields
     if (!participantData.participant) {
-      showStatus("⚠️ Оролцогчийн нэр эсвэл ID оруулна уу.", "error");
+      showStatus("⚠️ Оролцогчийн ID оруулна уу.", "error");
+      return;
+    }
+    
+    if (!participantData.gender) {
+      showStatus("⚠️ Хүйс сонгоно уу.", "error");
+      return;
+    }
+    
+    if (!participantData.age) {
+      showStatus("⚠️ Нас оруулна уу.", "error");
+      return;
+    }
+
+    const age = parseInt(participantData.age, 10);
+    if (age < 1 || age > 120) {
+      showStatus("⚠️ Насыг зөв оруулна уу (1-120).", "error");
       return;
     }
 
@@ -702,7 +713,7 @@
 
     // Initialize test
     initializePhase();
-  });
+  }
 
   function initializePhase() {
     // Create sequences for current phase
@@ -856,6 +867,18 @@
 
     let summaryHTML = `
       <div class="result-item">
+        <div>Оролцогч:</div>
+        <div class="result-value">${participantData.participant}</div>
+      </div>
+      <div class="result-item">
+        <div>Хүйс:</div>
+        <div class="result-value">${participantData.gender === 'М' ? 'Эрэгтэй' : participantData.gender === 'Э' ? 'Эмэгтэй' : 'Бусад'}</div>
+      </div>
+      <div class="result-item">
+        <div>Нас:</div>
+        <div class="result-value">${participantData.age}</div>
+      </div>
+      <div class="result-item">
         <div>Нийт хариулт (бүх хэсэг):</div>
         <div class="result-value">${records.length}</div>
       </div>
@@ -905,6 +928,8 @@
       meta: {
         generated_at: nowTs(),
         participant: participantData.participant,
+        gender: participantData.gender,
+        age: participantData.age,
         min_valid_rt_ms: minValidRt,
         same_key_spam_window: SAME_KEY_SPAM_WINDOW,
         same_key_spam_rt_ms: SAME_KEY_SPAM_RT,
@@ -941,6 +966,14 @@
 
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
+    // Space key to start test (only when on setup screen)
+    if (!elSetup.classList.contains('hidden') && e.code === 'Space') {
+      e.preventDefault();
+      startTest();
+      return;
+    }
+
+    // Test controls (only when test is running)
     if (elStage.classList.contains('hidden')) return;
 
     if (e.key === 'i' || e.key === 'I') {
