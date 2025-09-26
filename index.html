@@ -2,505 +2,363 @@
 <html lang="mn">
 <head>
   <meta charset="utf-8" />
-  <title>I/E Reaction Test - 3 Phase</title>
+  <title>I/E Reaction Test - 7 Phase</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root {
-      --primary: #0b1220;
-      --secondary: #111a2c;
-      --accent: #2a395a;
-      --text: #eaf0ff;
-      --muted: #98a8c9;
-      --success: #5de4a9;
-      --danger: #ff8b8b;
-      --warning: #ffca7a;
-    }
-
     * {
       box-sizing: border-box;
-      transition: all 0.2s ease;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100svh;
-      margin: 0;
-      background: linear-gradient(135deg, var(--primary) 0%, #1a2a4f 100%);
-      color: var(--text);
-      line-height: 1.6;
+      font-family: Arial, sans-serif;
+      background: white;
+      color: black;
+      line-height: 1.5;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
-    .card {
-      width: min(720px, 92vw);
-      background: var(--secondary);
-      border-radius: 20px;
-      padding: 32px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(42, 57, 90, 0.3);
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--text) 0%, var(--muted) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-align: center;
-    }
-
-    h2, h3 {
-      color: var(--text);
+    h1, h2, h3 {
+      margin: 20px 0 10px 0;
       text-align: center;
     }
 
     .subtitle {
-      color: var(--muted);
-      font-size: 16px;
-      margin-bottom: 24px;
       text-align: center;
+      margin-bottom: 30px;
+      font-size: 16px;
     }
 
-    .phase-title {
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--success);
-      text-align: center;
-      margin-bottom: 16px;
+    .section {
+      margin: 30px 0;
+      padding: 20px 0;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .section:last-child {
+      border-bottom: none;
+    }
+
+    .form-row {
+      margin: 15px 0;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    input, select, textarea, button {
+      padding: 10px;
+      border: 2px solid #333;
+      background: white;
+      font-size: 16px;
+      width: 100%;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    button:hover {
+      background: #f0f0f0;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .button-row button {
+      flex: 1;
     }
 
     .stimulus-area {
+      text-align: center;
+      padding: 60px 20px;
+      margin: 30px 0;
+      border: 2px solid #333;
       min-height: 300px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 0;
       gap: 20px;
     }
 
     .word {
-      font-size: clamp(32px, 7vw, 56px);
+      font-size: 48px;
+      font-weight: bold;
+    }
+
+    .word.good {
+      color: green;
+    }
+
+    .word.bad {
+      color: red;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
       text-align: center;
-      letter-spacing: .5px;
-      font-weight: 700;
-      background: linear-gradient(90deg, var(--text) 0%, var(--muted) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
-    .image {
-      max-width: 200px;
-      max-height: 200px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-      object-fit: cover;
-    }
-
-    .row {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      font-size: 18px;
-      padding: 16px 24px;
-      border-radius: 12px;
-      border: none;
-      background: linear-gradient(135deg, var(--accent) 0%, #1c2a48 100%);
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    .stat {
       flex: 1;
-      min-width: 140px;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    #btnI {
-      background: linear-gradient(135deg, var(--success) 0%, #4ac295 100%);
-    }
-
-    #btnE {
-      background: linear-gradient(135deg, var(--danger) 0%, #e57373 100%);
-    }
-
-    .pill {
-      font-size: 14px;
-      padding: 8px 16px;
-      border-radius: 999px;
-      border: 1px solid var(--accent);
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .pill span {
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .ok { color: var(--success); }
-    .bad { color: var(--danger); }
-    .warn { color: var(--warning); }
-
-    .hidden { display: none; }
-
-    textarea, input, select {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid var(--accent);
-      background: rgba(15, 24, 48, 0.6);
-      color: var(--text);
-      font-size: 16px;
-    }
-
-    textarea:focus, input:focus, select:focus {
-      outline: none;
-      border-color: #3a4d7a;
-      box-shadow: 0 0 0 2px rgba(58, 77, 122, 0.3);
-    }
-
-    .small {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .section {
-      margin-bottom: 24px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(42, 57, 90, 0.3);
-    }
-
-    .section:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
+      padding: 10px;
+      border: 1px solid #333;
+      margin: 0 5px;
     }
 
     .progress-bar {
-      height: 8px;
-      background: rgba(42, 57, 90, 0.3);
-      border-radius: 4px;
-      margin: 16px 0;
-      overflow: hidden;
+      height: 20px;
+      border: 2px solid #333;
+      margin: 20px 0;
     }
 
     .progress {
       height: 100%;
-      background: linear-gradient(90deg, var(--success) 0%, #4ac295 100%);
-      border-radius: 4px;
+      background: black;
       transition: width 0.3s ease;
     }
 
-    .instructions {
-      background: rgba(42, 57, 90, 0.2);
-      padding: 16px;
-      border-radius: 10px;
-      margin: 20px 0;
-      border-left: 4px solid var(--accent);
+    .hidden {
+      display: none;
     }
 
     .result-item {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 12px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid rgba(42, 57, 90, 0.2);
+      padding: 10px 0;
+      border-bottom: 1px solid #ccc;
     }
 
-    .result-item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .result-value {
-      font-weight: 600;
-    }
-
-    .auto-email-info {
-      background: rgba(93, 228, 169, 0.1);
-      border: 1px solid rgba(93, 228, 169, 0.3);
-      border-radius: 10px;
-      padding: 16px;
-      margin: 16px 0;
-      color: var(--success);
-    }
-
-    .question-group {
-      background: rgba(42, 57, 90, 0.1);
+    .instructions-box {
+      border: 2px solid #333;
       padding: 20px;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      border-left: 4px solid var(--accent);
-    }
-
-    .likert-scale {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 12px 0;
-      gap: 8px;
-    }
-
-    .likert-option {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      min-width: 60px;
-    }
-
-    .likert-option input[type="radio"] {
-      width: 20px;
-      height: 20px;
-      margin: 0;
-    }
-
-    .likert-label {
-      font-size: 12px;
-      text-align: center;
-      color: var(--muted);
-    }
-
-    .required {
-      color: var(--danger);
+      margin: 20px 0;
+      background: #f9f9f9;
     }
 
     .phase-break {
-      background: rgba(93, 228, 169, 0.1);
-      border: 2px solid var(--success);
-      border-radius: 15px;
-      padding: 24px;
+      border: 3px solid #000;
+      padding: 30px;
       text-align: center;
       margin: 20px 0;
+      background: #f5f5f5;
     }
 
-    .phase-break h3 {
-      color: var(--success);
-      margin: 0 0 16px 0;
+    .phase-instructions {
+      background: #e8f4fd;
+      border: 2px solid #0066cc;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 5px;
     }
 
     @media (max-width: 640px) {
-      .grid {
+      .form-grid {
         grid-template-columns: 1fr;
       }
-
-      .card {
-        padding: 24px 20px;
-      }
-
-      button {
-        min-width: 100%;
-      }
-
-      .likert-scale {
+      
+      .button-row {
         flex-direction: column;
-        gap: 12px;
       }
-
-      .likert-option {
-        flex-direction: row;
-        min-width: auto;
-        width: 100%;
-        justify-content: space-between;
-        padding: 8px;
-        background: rgba(42, 57, 90, 0.2);
-        border-radius: 8px;
+      
+      .stats {
+        flex-direction: column;
       }
-
-      .stimulus-area {
-        min-height: 250px;
-        padding: 30px 0;
-      }
-
-      .image {
-        max-width: 150px;
-        max-height: 150px;
+      
+      .stat {
+        margin: 5px 0;
       }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>I / E Reaction Test - 3 хэсэг</h1>
-    <div class="subtitle">3 өөр хэлбэрийн тестээр дамжин эерэг/сөрөг хариу өгнө үү.</div>
+  <h1>САЙН</h1>
+  <h1 style="text-align: right; margin-top: -50px; color: red;">МУУ</h1>
 
-    <!-- Setup -->
-    <div id="setup">
-      <div class="section">
-        <div style="margin-bottom: 16px;">
-          <label class="small">Оролцогчийн ID <span class="required">*</span>:</label>
-          <input id="participant" placeholder="Жишээ: 001" required>
+  <div class="subtitle">
+    Зүүн гарын дунд эрхий долоовор хуруугаа компьютерийн гарны Б товчлуур, баруун гарын дунд эрхий долоовор хуруугаа компьютерийн гарны Т товчлуур дээр тус тус байрлуул.
+  </div>
+
+  <!-- Setup -->
+  <div id="setup">
+    <div class="section">
+      <div class="form-row">
+        <label>Оролцогчийн ID:</label>
+        <input id="participant" placeholder="Жишээ: 001" required>
+      </div>
+
+      <div class="form-grid">
+        <div>
+          <label>Хүйс:</label>
+          <select id="gender" required>
+            <option value="">Сонгоно уу</option>
+            <option value="М">Эрэгтэй</option>
+            <option value="Э">Эмэгтэй</option>
+            <option value="Б">Бусад</option>
+          </select>
         </div>
-
-        <div class="grid">
-          <div>
-            <label class="small">Хүйс <span class="required">*</span>:</label>
-            <select id="gender" required>
-              <option value="">Сонгоно уу</option>
-              <option value="М">Эрэгтэй</option>
-              <option value="Э">Эмэгтэй</option>
-              <option value="Б">Бусад</option>
-            </select>
-          </div>
-          <div>
-            <label class="small">Нас <span class="required">*</span>:</label>
-            <input id="age" type="number" placeholder="Жишээ: 25" min="1" max="120" required>
-          </div>
+        <div>
+          <label>Нас:</label>
+          <input id="age" type="number" placeholder="Жишээ: 25" min="1" max="120" required>
         </div>
-
-        <!-- Anti-spam босго далдлагдсан, гэхдээ ажиллаж байна -->
-        <input id="minRt" type="hidden" value="200">
       </div>
 
-      <div class="instructions">
-        <strong>Заавар:</strong>
-        <ul style="margin: 8px 0; padding-left: 20px;">
-          <li><strong>1-р хэсэг:</strong> Үг харж "I" (эерэг) эсвэл "E" (сөрөг) дарна</li>
-          <li><strong>2-р хэсэг:</strong> Зураг харж "I" (эерэг) эсвэл "E" (сөрөг) дарна</li>
-          <li><strong>3-р хэсэг:</strong> Зураг + үг хослол харж "I" (эерэг) эсвэл "E" (сөрөг) дарна</li>
-          <li>Хэт хурдан хариултыг (200ms-ээс бага) тооцохгүй</li>
-          <li>Аль болох хурдан, зөв хариулахыг хичээгээрэй</li>
-          <li><strong>Space товчийг дарж тестийг эхлүүлээрэй</strong></li>
-        </ul>
-      </div>
-
-      <div class="row">
-        <button id="btnStart">Туршилтыг эхлүүлэх (Space)</button>
-      </div>
+      <input id="minRt" type="hidden" value="200">
     </div>
 
-    <!-- Test Stage -->
-    <div id="stage" class="hidden">
-      <div class="phase-title" id="phaseTitle">1-р хэсэг: Үг</div>
-      
-      <div class="section">
-        <div class="row">
-          <div class="pill">Хэсэг: <span id="currentPhase">1</span>/3</div>
-          <div class="pill">Үг: <span id="idx">0</span>/<span id="total">0</span></div>
-          <div class="pill">Хүчинтэй: <span id="validCount" class="ok">0</span></div>
-          <div class="pill">Хүчингүй: <span id="invalidCount" class="bad">0</span></div>
-        </div>
-
-        <div class="progress-bar">
-          <div class="progress" id="progress" style="width: 0%"></div>
-        </div>
-      </div>
-
-      <div class="stimulus-area" id="stimulusArea">
-        <div class="word" id="word">Бэлэн болсон уу?</div>
-        <img id="image" class="image hidden" src="" alt="">
-      </div>
-
-      <div class="section">
-        <div class="row">
-          <button id="btnI">I (эерэг)</button>
-          <button id="btnE">E (сөрөг)</button>
-        </div>
-
-        <div class="row">
-          <button id="btnUndo">Сүүлчийн хариултыг буцаах</button>
-          <button id="btnFinish">Туршилтыг дуусгах</button>
-        </div>
-      </div>
+    <div class="instructions-box">
+      <p><strong>Энэ тест 7 өөр хэсэгтэй бөгөөд хэсэг бүрт өөр заавар байна.</strong></p>
+      <p><strong>Дэлгэцийн дээр үг гарч ирэхэд САЙН эсвэл МУУ-д хамрах эсэхийг шийдээд тохирох товчийг дарна уу.</strong></p>
+      <p><strong>Б товч = САЙН (ногоон өнгөтэй)</strong></p>
+      <p><strong>Т товч = МУУ (улаан өнгөтэй)</strong></p>
+      <br>
+      <p><strong>Аль болох хурдан бөгөөд зөв хариулахыг хичээгээрэй!</strong></p>
+      <br>
+      <p><strong>ЗАЙ АВАХ ТОВЧЛУУР дарж эхэлнэ үү.</strong></p>
     </div>
 
-    <!-- Phase Break -->
-    <div id="phaseBreak" class="hidden">
-      <div class="phase-break">
-        <h3 id="breakTitle">1-р хэсэг дууслаа!</h3>
-        <p id="breakMessage">2-р хэсэгт зураг харж хариулна.</p>
-        <button id="btnNextPhase">Дараагийн хэсэг рүү</button>
+    <button id="btnStart">ЗАЙ АВАХ ТОВЧЛУУР (Space)</button>
+  </div>
+
+  <!-- Phase Instructions -->
+  <div id="phaseInstructions" class="hidden">
+    <div class="phase-instructions">
+      <h3 id="phaseInstructionsTitle">1-р хэсгийн заавар</h3>
+      <div id="phaseInstructionsContent">
+        <!-- Content will be filled by JavaScript -->
       </div>
+      <button id="btnStartPhase">Хэсгийг эхлүүлэх</button>
+    </div>
+  </div>
+
+  <!-- Test Stage -->
+  <div id="stage" class="hidden">
+    <h3 id="phaseTitle">1-р хэсэг</h3>
+    
+    <div class="stats">
+      <div class="stat">Хэсэг: <strong id="currentPhase">1</strong>/7</div>
+      <div class="stat">Үг: <strong id="idx">0</strong>/<strong id="total">0</strong></div>
+      <div class="stat">Зөв: <strong id="validCount">0</strong></div>
+      <div class="stat">Буруу: <strong id="invalidCount">0</strong></div>
     </div>
 
-    <!-- Results -->
-    <div id="result" class="hidden">
-      <h2 style="text-align: center; margin-bottom: 24px;">Үр дүн</h2>
+    <div class="progress-bar">
+      <div class="progress" id="progress" style="width: 0%"></div>
+    </div>
 
-      <div class="section">
-        <div id="summary"></div>
-      </div>
+    <div class="stimulus-area" id="stimulusArea">
+      <div class="word" id="word">Бэлэн болсон уу?</div>
+    </div>
 
-      <div class="section">
-        <h3 style="margin-top: 0;">Үр дүнг хадгалах</h3>
-        <div class="row">
-          <button id="btnDownloadCsv">CSV файл татах</button>
-        </div>
+    <div class="button-row">
+      <button id="btnGood" style="background: #90EE90; color: black;">Б (САЙН)</button>
+      <button id="btnBad" style="background: #FFB6C1; color: black;">Т (МУУ)</button>
+    </div>
 
-        <div id="status" style="margin-top: 12px; padding: 10px; border-radius: 6px;" class="hidden"></div>
-      </div>
+    <div class="button-row">
+      <button id="btnUndo">Сүүлчийн хариултыг буцаах</button>
+      <button id="btnFinish">Туршилтыг дуусгах</button>
+    </div>
+  </div>
 
-      <div class="section">
-        <h3>Дэлгэрэнгүй мэдээлэл</h3>
-        <label class="small">Debug JSON:</label>
-        <textarea id="debug"></textarea>
-      </div>
+  <!-- Phase Break -->
+  <div id="phaseBreak" class="hidden">
+    <div class="phase-break">
+      <h3 id="breakTitle">1-р хэсэг дууслаа!</h3>
+      <p id="breakMessage">Дараагийн хэсэг рүү шилжих.</p>
+      <button id="btnNextPhase">Дараагийн хэсэг рүү</button>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="result" class="hidden">
+    <h2>Үр дүн</h2>
+
+    <div class="section">
+      <div id="summary"></div>
+    </div>
+
+    <div class="section">
+      <h3>Үр дүнг хадгалах</h3>
+      <button id="btnDownloadCsv">CSV файл татах</button>
+      <div id="status" style="margin-top: 12px; padding: 10px; border: 1px solid #ccc;" class="hidden"></div>
+    </div>
+
+    <div class="section">
+      <h3>Дэлгэрэнгүй мэдээлэл</h3>
+      <label>Debug JSON:</label>
+      <textarea id="debug" rows="10"></textarea>
     </div>
   </div>
 
 <script>
   // ===== 1) Тохиргоо =====
   const WORDS = [
-    "Happy","Sad","Love","Anger","Peace","Hate","Proud","Shame","Smile","Fear",
-    "Joy","Pain","Friend","Enemy","Warm","Cold"
-  ];
-
-  // Зургийн URLs (placeholder images - та өөрчилж болно)
-  const IMAGES = [
-    "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop", // happy
-    "https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=200&h=200&fit=crop", // sad
-    "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=200&h=200&fit=crop", // love
-    "https://images.unsplash.com/photo-1621252179027-94459d278660?w=200&h=200&fit=crop", // anger
-    "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=200&h=200&fit=crop", // peace
-    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&h=200&fit=crop", // hate
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop", // proud
-    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop", // shame
-    "https://images.unsplash.com/photo-1464207687429-7505649dae38?w=200&h=200&fit=crop", // smile
-    "https://images.unsplash.com/photo-1614850523060-8da21d432f29?w=200&h=200&fit=crop", // fear
-    "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=200&h=200&fit=crop", // joy
-    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&h=200&fit=crop", // pain
-    "https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=200&h=200&fit=crop", // friend
-    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=200&h=200&fit=crop", // enemy
-    "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=200&h=200&fit=crop", // warm
-    "https://images.unsplash.com/photo-1483664852095-d6cc6870702d?w=200&h=200&fit=crop"  // cold
+    "Happy", "Sad", "Love", "Anger", "Peace", "Hate", "Proud", "Shame", "Smile", "Fear",
+    "Joy", "Pain", "Friend", "Enemy", "Warm", "Cold", "Beautiful", "Ugly", "Success", "Failure",
+    "Hope", "Despair", "Trust", "Betrayal", "Kindness", "Cruelty", "Honest", "Lie", "Brave", "Coward"
   ];
 
   const PHASES = [
-    { name: "1-р хэсэг: Үг", type: "word" },
-    { name: "2-р хэсэг: Зураг", type: "image" },
-    { name: "3-р хэсэг: Үг + Зураг", type: "both" }
+    { 
+      name: "1-р хэсэг: Эерэг үгс", 
+      type: "positive_words",
+      instruction: "Эерэг сэтгэгдэл төрүүлдэг үгсийг САЙН (Б товч), сөрөг сэтгэгдэл төрүүлдэг үгсийг МУУ (Т товч) гэж ангилна уу."
+    },
+    { 
+      name: "2-р хэсэг: Сөрөг үгс", 
+      type: "negative_words",
+      instruction: "Сөрөг сэтгэгдэл төрүүлдэг үгсийг МУУ (Т товч), эерэг сэтгэгдэл төрүүлдэг үгсийг САЙН (Б товч) гэж ангилна уу."
+    },
+    { 
+      name: "3-р хэсэг: Холимог үгс 1", 
+      type: "mixed_1",
+      instruction: "Эерэг үгсийг САЙН (Б товч), сөрөг үгсийг МУУ (Т товч) гэж хурдан ангилна уу."
+    },
+    { 
+      name: "4-р хэсэг: Эсрэг ангилал", 
+      type: "reverse",
+      instruction: "АНХААР: Одоо эсрэгээрээ ангилна! Эерэг үгсийг МУУ (Т товч), сөрөг үгсийг САЙН (Б товч) гэж дарна уу."
+    },
+    { 
+      name: "5-р хэсэг: Холимог үгс 2", 
+      type: "mixed_2",
+      instruction: "Дахин хэвийн дараллаар: Эерэг үгсийг САЙН (Б товч), сөрөг үгсийг МУУ (Т товч) гэж ангилна уу."
+    },
+    { 
+      name: "6-р хэсэг: Түргэн шийдвэр", 
+      type: "fast_decision",
+      instruction: "Хамгийн хурдан шийдвэр гарга! Эерэг үгсийг САЙН (Б товч), сөрөг үгсийг МУУ (Т товч)."
+    },
+    { 
+      name: "7-р хэсэг: Эцсийн тест", 
+      type: "final_test",
+      instruction: "Сүүлчийн хэсэг: Эерэг үгсийг САЙН (Б товч), сөрөг үгсийг МУУ (Т товч) гэж ангилна уу."
+    }
   ];
+
+  const POSITIVE_WORDS = ["Happy", "Love", "Peace", "Proud", "Smile", "Joy", "Friend", "Warm", "Beautiful", "Success", "Hope", "Trust", "Kindness", "Honest", "Brave"];
+  const NEGATIVE_WORDS = ["Sad", "Anger", "Hate", "Shame", "Fear", "Pain", "Enemy", "Cold", "Ugly", "Failure", "Despair", "Betrayal", "Cruelty", "Lie", "Coward"];
 
   const SHUFFLE = true;
   const SAME_KEY_SPAM_WINDOW = 5;
@@ -511,7 +369,6 @@
   // ===== 2) Төлөв =====
   let currentPhase = 0;
   let seq = [];
-  let imageSeq = [];
   let i = 0;
   let startTime = 0;
   let records = [];
@@ -523,11 +380,11 @@
 
   // ===== 3) Элементийн холбоос =====
   const elSetup = document.getElementById('setup');
+  const elPhaseInstructions = document.getElementById('phaseInstructions');
   const elStage = document.getElementById('stage');
   const elPhaseBreak = document.getElementById('phaseBreak');
   const elResult = document.getElementById('result');
   const elWord = document.getElementById('word');
-  const elImage = document.getElementById('image');
   const elIdx = document.getElementById('idx');
   const elTotal = document.getElementById('total');
   const elValid = document.getElementById('validCount');
@@ -567,7 +424,28 @@
     return data;
   }
 
-  function pushAnswer(answer, rt) {
+  function getWordsForPhase(phaseType) {
+    switch(phaseType) {
+      case 'positive_words':
+        return shuffle([...POSITIVE_WORDS]);
+      case 'negative_words':
+        return shuffle([...NEGATIVE_WORDS]);
+      case 'mixed_1':
+      case 'mixed_2':
+      case 'reverse':
+      case 'fast_decision':
+      case 'final_test':
+        return shuffle([...POSITIVE_WORDS.slice(0, 10), ...NEGATIVE_WORDS.slice(0, 10)]);
+      default:
+        return shuffle([...WORDS]);
+    }
+  }
+
+  function isPositiveWord(word) {
+    return POSITIVE_WORDS.includes(word);
+  }
+
+  function pushAnswer(answer, rt, word) {
     lastAnswers.push(answer);
     lastRTs.push(rt);
     if (lastAnswers.length > SAME_KEY_SPAM_WINDOW) {
@@ -581,13 +459,29 @@
     }
     const invalid = (rt < minValidRt) || spamSeries;
 
+    // Determine correct answer based on phase
+    let correctAnswer;
+    const phase = PHASES[currentPhase];
+    const isPositive = isPositiveWord(word);
+    
+    if (phase.type === 'reverse') {
+      correctAnswer = isPositive ? 'BAD' : 'GOOD';
+    } else {
+      correctAnswer = isPositive ? 'GOOD' : 'BAD';
+    }
+
+    const isCorrect = answer === correctAnswer;
+
     records.push({
       idx: i+1,
       phase: currentPhase + 1,
-      phase_type: PHASES[currentPhase].type,
-      word: seq[i] || '',
-      image: imageSeq[i] || '',
+      phase_type: phase.type,
+      phase_name: phase.name,
+      word: word,
+      word_type: isPositive ? 'positive' : 'negative',
       answer,
+      correct_answer: correctAnswer,
+      is_correct: isCorrect,
       rt_ms: rt,
       ts: nowTs(),
       participant: participantData.participant || '',
@@ -599,19 +493,22 @@
   }
 
   function updateCounters() {
-    const validN = records.filter(r => r.valid && r.phase === currentPhase + 1).length;
-    const invalidN = records.filter(r => r.phase === currentPhase + 1).length - validN;
+    const currentPhaseRecords = records.filter(r => r.phase === currentPhase + 1);
+    const validRecords = currentPhaseRecords.filter(r => r.valid);
+    const validN = validRecords.length;
+    const invalidN = currentPhaseRecords.length - validN;
+    
     elValid.textContent = validN;
     elInvalid.textContent = invalidN;
-    elIdx.textContent = Math.min(records.filter(r => r.phase === currentPhase + 1).length + 1, seq.length);
+    elIdx.textContent = Math.min(currentPhaseRecords.length + 1, seq.length);
     elCurrentPhase.textContent = currentPhase + 1;
 
-    const progress = (records.filter(r => r.phase === currentPhase + 1).length / seq.length) * 100;
+    const progress = (currentPhaseRecords.length / seq.length) * 100;
     elProgress.style.width = `${progress}%`;
   }
 
   function toCSV(rows) {
-    const cols = ["idx","phase","phase_type","word","image","answer","rt_ms","ts","participant","gender","age","valid","reason"];
+    const cols = ["idx","phase","phase_type","phase_name","word","word_type","answer","correct_answer","is_correct","rt_ms","ts","participant","gender","age","valid","reason"];
     const header = cols.join(",");
     const body = rows.map(r => cols.map(c => {
       const v = r[c];
@@ -633,18 +530,7 @@
   function showStatus(message, type = "info") {
     elStatus.textContent = message;
     elStatus.className = "";
-
-    if (type === "success") {
-      elStatus.style.backgroundColor = "rgba(93, 228, 169, 0.2)";
-      elStatus.style.borderLeft = "4px solid var(--success)";
-    } else if (type === "error") {
-      elStatus.style.backgroundColor = "rgba(255, 139, 139, 0.2)";
-      elStatus.style.borderLeft = "4px solid var(--danger)";
-    } else {
-      elStatus.style.backgroundColor = "rgba(255, 202, 122, 0.2)";
-      elStatus.style.borderLeft = "4px solid var(--warning)";
-    }
-
+    elStatus.style.backgroundColor = type === "success" ? "#e7f5e7" : type === "error" ? "#ffeaea" : "#fff4e6";
     elStatus.classList.remove("hidden");
 
     if (type === "success" || type === "error") {
@@ -665,7 +551,6 @@
         mode: 'no-cors'
       });
 
-      // no-cors mode-д response status шалгаж болохгүй тул амжилттай гэж тооцно
       showStatus("✅ Үр дүн амжилттай amarmarker@gmail.com руу илгээгдлээ!", "success");
 
     } catch (error) {
@@ -676,13 +561,11 @@
 
   // ===== 5) Event Handlers =====
 
-  // Start Test Button
   document.getElementById('btnStart').addEventListener('click', startTest);
   
   function startTest() {
     participantData = getFormData('setup');
     
-    // Validate required fields
     if (!participantData.participant) {
       showStatus("⚠️ Оролцогчийн ID оруулна уу.", "error");
       return;
@@ -711,33 +594,36 @@
       return;
     }
 
-    // Initialize test
-    initializePhase();
+    showPhaseInstructions();
   }
 
-  function initializePhase() {
-    // Create sequences for current phase
-    seq = [...WORDS];
-    imageSeq = [...IMAGES];
+  function showPhaseInstructions() {
+    const phase = PHASES[currentPhase];
+    document.getElementById('phaseInstructionsTitle').textContent = phase.name + " - Заавар";
+    document.getElementById('phaseInstructionsContent').innerHTML = `<p><strong>${phase.instruction}</strong></p>`;
     
-    if (SHUFFLE) {
-      const indices = Array.from({length: WORDS.length}, (_, i) => i);
-      shuffle(indices);
-      seq = indices.map(i => WORDS[i]);
-      imageSeq = indices.map(i => IMAGES[i]);
-    }
+    elSetup.classList.add('hidden');
+    elStage.classList.add('hidden');
+    elPhaseBreak.classList.add('hidden');
+    elPhaseInstructions.classList.remove('hidden');
+  }
+
+  document.getElementById('btnStartPhase').addEventListener('click', initializePhase);
+
+  function initializePhase() {
+    const phase = PHASES[currentPhase];
+    seq = getWordsForPhase(phase.type);
 
     i = 0;
     elTotal.textContent = seq.length;
-    elPhaseTitle.textContent = PHASES[currentPhase].name;
+    elPhaseTitle.textContent = phase.name;
     
-    elSetup.classList.add('hidden');
+    elPhaseInstructions.classList.add('hidden');
     elPhaseBreak.classList.add('hidden');
     elStage.classList.remove('hidden');
 
-    // Countdown
     elWord.textContent = "3";
-    elImage.classList.add('hidden');
+    elWord.className = "word";
     setTimeout(() => {
       elWord.textContent = "2";
       setTimeout(() => {
@@ -752,24 +638,17 @@
   function showStimulus() {
     if (i >= seq.length) return endPhase();
     
-    const phaseType = PHASES[currentPhase].type;
+    const word = seq[i];
+    const isPositive = isPositiveWord(word);
     
-    // Reset display
-    elWord.classList.add('hidden');
-    elImage.classList.add('hidden');
+    elWord.textContent = word;
+    elWord.className = "word";
     
-    // Show based on phase type
-    if (phaseType === 'word') {
-      elWord.textContent = seq[i];
-      elWord.classList.remove('hidden');
-    } else if (phaseType === 'image') {
-      elImage.src = imageSeq[i];
-      elImage.classList.remove('hidden');
-    } else if (phaseType === 'both') {
-      elWord.textContent = seq[i];
-      elImage.src = imageSeq[i];
-      elWord.classList.remove('hidden');
-      elImage.classList.remove('hidden');
+    // Add color based on word type for visual feedback
+    if (isPositive) {
+      elWord.classList.add("good");
+    } else {
+      elWord.classList.add("bad");
     }
     
     startTime = performance.now();
@@ -778,38 +657,31 @@
 
   function answer(a) {
     const rt = Math.round(performance.now() - startTime);
-    pushAnswer(a, rt);
+    const word = seq[i];
+    pushAnswer(a, rt, word);
     i++;
     if (i < seq.length) showStimulus(); else endPhase();
   }
 
   function endPhase() {
     if (currentPhase < PHASES.length - 1) {
-      // Show phase break
       elStage.classList.add('hidden');
       elPhaseBreak.classList.remove('hidden');
       
       document.getElementById('breakTitle').textContent = `${currentPhase + 1}-р хэсэг дууслаа!`;
-      
-      if (currentPhase === 0) {
-        document.getElementById('breakMessage').textContent = "2-р хэсэгт зураг харж хариулна.";
-      } else if (currentPhase === 1) {
-        document.getElementById('breakMessage').textContent = "3-р хэсэгт зураг + үг хослол харж хариулна.";
-      }
+      document.getElementById('breakMessage').textContent = `Дараагийн хэсэг: ${PHASES[currentPhase + 1].name}`;
     } else {
-      // All phases done
       finish();
     }
   }
 
-  // Next Phase Button
   document.getElementById('btnNextPhase').addEventListener('click', () => {
     currentPhase++;
-    initializePhase();
+    showPhaseInstructions();
   });
 
-  document.getElementById('btnI').addEventListener('click', ()=>answer('I'));
-  document.getElementById('btnE').addEventListener('click', ()=>answer('E'));
+  document.getElementById('btnGood').addEventListener('click', ()=>answer('GOOD'));
+  document.getElementById('btnBad').addEventListener('click', ()=>answer('BAD'));
 
   document.getElementById('btnUndo').addEventListener('click', () => {
     const currentPhaseRecords = records.filter(r => r.phase === currentPhase + 1);
@@ -818,7 +690,6 @@
       return;
     }
     
-    // Remove last record for current phase
     for (let idx = records.length - 1; idx >= 0; idx--) {
       if (records[idx].phase === currentPhase + 1) {
         records.splice(idx, 1);
@@ -846,78 +717,95 @@
 
     const validRows = records.filter(r => r.valid);
     
-    // Calculate stats by phase
     const phaseStats = PHASES.map((phase, idx) => {
       const phaseRecords = validRows.filter(r => r.phase === idx + 1);
-      const avgI = average(phaseRecords.filter(r => r.answer === 'I').map(r=>r.rt_ms));
-      const avgE = average(phaseRecords.filter(r => r.answer === 'E').map(r=>r.rt_ms));
+      const correctAnswers = phaseRecords.filter(r => r.is_correct).length;
+      const avgGood = average(phaseRecords.filter(r => r.answer === 'GOOD').map(r=>r.rt_ms));
+      const avgBad = average(phaseRecords.filter(r => r.answer === 'BAD').map(r=>r.rt_ms));
+      const accuracy = phaseRecords.length > 0 ? (correctAnswers / phaseRecords.length * 100) : 0;
       
       return {
         phase: idx + 1,
         name: phase.name,
+        type: phase.type,
         total: records.filter(r => r.phase === idx + 1).length,
         valid: phaseRecords.length,
         invalid: records.filter(r => r.phase === idx + 1 && !r.valid).length,
-        avgI: avgI,
-        avgE: avgE
+        correct: correctAnswers,
+        accuracy: accuracy,
+        avgGood: avgGood,
+        avgBad: avgBad
       };
     });
 
     const totalTime = validRows.reduce((sum, r) => sum + r.rt_ms, 0);
+    const totalCorrect = validRows.filter(r => r.is_correct).length;
+    const totalAccuracy = validRows.length > 0 ? (totalCorrect / validRows.length * 100) : 0;
 
     let summaryHTML = `
       <div class="result-item">
         <div>Оролцогч:</div>
-        <div class="result-value">${participantData.participant}</div>
+        <div><strong>${participantData.participant}</strong></div>
       </div>
       <div class="result-item">
         <div>Хүйс:</div>
-        <div class="result-value">${participantData.gender === 'М' ? 'Эрэгтэй' : participantData.gender === 'Э' ? 'Эмэгтэй' : 'Бусад'}</div>
+        <div><strong>${participantData.gender === 'М' ? 'Эрэгтэй' : participantData.gender === 'Э' ? 'Эмэгтэй' : 'Бусад'}</strong></div>
       </div>
       <div class="result-item">
         <div>Нас:</div>
-        <div class="result-value">${participantData.age}</div>
+        <div><strong>${participantData.age}</strong></div>
       </div>
       <div class="result-item">
         <div>Нийт хариулт (бүх хэсэг):</div>
-        <div class="result-value">${records.length}</div>
+        <div><strong>${records.length}</strong></div>
       </div>
       <div class="result-item">
-        <div>Хүчинтэй хариулт (бүх хэсэг):</div>
-        <div class="result-value ok">${validRows.length}</div>
+        <div>Зөв хариулт (бүх хэсэг):</div>
+        <div><strong>${validRows.length}</strong></div>
       </div>
       <div class="result-item">
-        <div>Хүчингүй хариулт (бүх хэсэг):</div>
-        <div class="result-value bad">${records.length - validRows.length}</div>
+        <div>Нийт зөвтэй хариулт:</div>
+        <div><strong>${totalCorrect}</strong></div>
+      </div>
+      <div class="result-item">
+        <div>Нийт нарийвчлал:</div>
+        <div><strong>${Math.round(totalAccuracy)}%</strong></div>
       </div>
       <div class="result-item">
         <div>Нийт зарцуулсан хугацаа:</div>
-        <div class="result-value">${Math.round(totalTime/1000)} секунд</div>
+        <div><strong>${Math.round(totalTime/1000)} секунд</strong></div>
       </div>
     `;
 
-    // Add phase-specific stats
     phaseStats.forEach(stat => {
       summaryHTML += `
-        <div class="result-item" style="margin-top: 20px; border-top: 2px solid var(--accent); padding-top: 12px;">
+        <div class="result-item" style="margin-top: 20px; border-top: 2px solid #333; padding-top: 12px;">
           <div><strong>${stat.name}</strong></div>
           <div></div>
         </div>
         <div class="result-item">
           <div>Нийт хариулт:</div>
-          <div class="result-value">${stat.total}</div>
+          <div><strong>${stat.total}</strong></div>
         </div>
         <div class="result-item">
-          <div>Хүчинтэй хариулт:</div>
-          <div class="result-value ok">${stat.valid}</div>
+          <div>Зөв хариулт:</div>
+          <div><strong>${stat.valid}</strong></div>
         </div>
         <div class="result-item">
-          <div>I (эерэг) дундаж RT:</div>
-          <div class="result-value">${isFinite(stat.avgI)?Math.round(stat.avgI):'-'} ms</div>
+          <div>Зөвтэй хариулт:</div>
+          <div><strong>${stat.correct}</strong></div>
         </div>
         <div class="result-item">
-          <div>E (сөрөг) дундаж RT:</div>
-          <div class="result-value">${isFinite(stat.avgE)?Math.round(stat.avgE):'-'} ms</div>
+          <div>Нарийвчлал:</div>
+          <div><strong>${Math.round(stat.accuracy)}%</strong></div>
+        </div>
+        <div class="result-item">
+          <div>САЙН дундаж RT:</div>
+          <div><strong>${isFinite(stat.avgGood)?Math.round(stat.avgGood):'-'} ms</strong></div>
+        </div>
+        <div class="result-item">
+          <div>МУУ дундаж RT:</div>
+          <div><strong>${isFinite(stat.avgBad)?Math.round(stat.avgBad):'-'} ms</strong></div>
         </div>
       `;
     });
@@ -936,6 +824,8 @@
         total_records: records.length,
         total_valid: validRows.length,
         total_invalid: records.length - validRows.length,
+        total_correct: totalCorrect,
+        total_accuracy: totalAccuracy,
         total_time_ms: totalTime,
         phases: phaseStats
       },
@@ -946,14 +836,12 @@
 
     elDebug.value = JSON.stringify(payload, null, 2);
 
-    // Send auto email
     sendAutoEmail(payload);
 
-    // CSV download
     document.getElementById('btnDownloadCsv').onclick = () => {
       const csv = toCSV(records);
       const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-      const filename = `ie_test_3phase_${participantData.participant.replace(/[^a-zA-Z0-9]/g, '_')}_${timestamp}.csv`;
+      const filename = `ie_test_7phase_${participantData.participant.replace(/[^a-zA-Z0-9]/g, '_')}_${timestamp}.csv`;
       downloadFile(filename, csv, "text/csv");
       showStatus("CSV файл амжилттай татагдлаа.", "success");
     };
@@ -973,20 +861,27 @@
       return;
     }
 
+    // Space key to start phase (when on phase instructions screen)
+    if (!elPhaseInstructions.classList.contains('hidden') && e.code === 'Space') {
+      e.preventDefault();
+      initializePhase();
+      return;
+    }
+
     // Test controls (only when test is running)
     if (elStage.classList.contains('hidden')) return;
 
-    if (e.key === 'i' || e.key === 'I') {
-      document.getElementById('btnI').click();
-      document.getElementById('btnI').style.transform = 'scale(0.95)';
+    if (e.key === 'b' || e.key === 'B') {
+      document.getElementById('btnGood').click();
+      document.getElementById('btnGood').style.background = '#7FFF7F';
       setTimeout(() => {
-        document.getElementById('btnI').style.transform = '';
+        document.getElementById('btnGood').style.background = '#90EE90';
       }, 150);
-    } else if (e.key === 'e' || e.key === 'E') {
-      document.getElementById('btnE').click();
-      document.getElementById('btnE').style.transform = 'scale(0.95)';
+    } else if (e.key === 't' || e.key === 'T') {
+      document.getElementById('btnBad').click();
+      document.getElementById('btnBad').style.background = '#FF9999';
       setTimeout(() => {
-        document.getElementById('btnE').style.transform = '';
+        document.getElementById('btnBad').style.background = '#FFB6C1';
       }, 150);
     } else if (e.key === 'z' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
